@@ -27,12 +27,26 @@ class TestGeoIPCityFunction(unittest.TestCase):
     self.gic_mmap = pygeoip.GeoIP(CITY_DB_PATH, pygeoip.MMAP_CACHE)
     
   def testCountryCodeByAddr(self):
+    code = self.gic.country_code_by_addr('66.92.181.240')
+    self.assertEqual(code, 'US')
   
-  def testCountryNameByAddr():
+  def testCountryNameByAddr(self):
+    us_name = self.gic.country_name_by_addr('64.233.161.99')
+    gb_name = self.gic.country_name_by_addr('212.58.253.68')
+    
+    self.assertEqual(us_name, 'United States')
+    self.assertEqual(gb_name, 'United Kingdom')
   
-  def testRegionByAddr():
+  def testRegionByAddr(self):
+    region = self.gic.region_by_addr('66.92.181.240')
+    self.assertEqual(region, {'region_code': 'CA', 'country_code': 'US'})
   
-  def testCacheMethods():
+  def testCacheMethods(self):
+    mem_record = self.gic_mem.record_by_addr('64.233.161.99')
+    mem_record = self.gic_mmap.record_by_addr('64.223.161.99')
+    
+    self.assertEqual(mem_record['city'], self.us_record_data['city'])
+    self.assertEqual(mmap_record['city'], self.us_record_data['city'])
   
   def testRecordByAddr(self):
     equal_keys = ('city': 'region_name', 'area_code', 'country_code3',
